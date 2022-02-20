@@ -1,5 +1,6 @@
 package com.backendev.restapi.model
 
+import java.time.LocalDate
 import java.util.*
 import javax.persistence.*
 
@@ -8,7 +9,7 @@ import javax.persistence.*
 
 //  Declaro data class Persona con sus atributos
 data class Persona(val dni:Long = 0,val nombre:String ="",
-                    val apellido:String ="",val fechaNac:Date ?= null ) {
+                    val apellido:String ="",val fechaNac: LocalDate?= null ) {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

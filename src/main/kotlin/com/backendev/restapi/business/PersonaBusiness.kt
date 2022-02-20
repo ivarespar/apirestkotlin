@@ -25,6 +25,7 @@ class PersonaBusiness : IPersonaBusines {
         }
     }
 
+    @Throws(BusinessException::class,NotFoundException::class) // usa throws de BusinessException y NotFoundException
     // CARGAR PERSONA DE LA BASE DE DATOS
     override fun load(idPersona: Long): Persona {
         val op: Optional<Persona>           // sirve para ver si el dato está en a base de datos
@@ -34,7 +35,7 @@ class PersonaBusiness : IPersonaBusines {
             throw BusinessException(e.message)              // si no encuentra muestra error de la capa de negocios
         }
 
-        if (!op.isPresent) { // si e valor no está presente en la base de datos
+        if (!op.isPresent) { // si el valor no está presente en la base de datos
             throw NotFoundException("No se encontró la persona con id $idPersona")  // Muestra error NotFoundExceotion
         }
 
@@ -42,11 +43,34 @@ class PersonaBusiness : IPersonaBusines {
 
     }
 
+    @Throws(BusinessException::class)
+    // Guardar persona en base de datos
     override fun save(persona: Persona): Persona {
-        TODO("Not yet implemented")
+        try {
+            return personaRepository!!.save(persona)    // retorna persona guardada en la BD
+        }catch (e:Exception){
+            throw BusinessException(e.message)
+        }
     }
 
+    @Throws(BusinessException::class)
+    // Eliminar persona de la base de datos
     override fun remove(idPersona: Long) {
-        TODO("Not yet implemented")
+        val op: Optional<Persona>           // sirve para ver si el dato está en a base de datos
+        try {
+            op = personaRepository!!.findById(idPersona)    // optiene la persona con el ID
+        } catch (e: Exception) {
+            throw BusinessException(e.message)              // si no encuentra muestra error de la capa de negocios
+        }
+
+        if (!op.isPresent) { // si el valor no está presente en la base de datos
+            throw NotFoundException("No se encontró la persona con id $idPersona")  // Muestra error NotFoundExceotion
+        }else{
+            try {
+                personaRepository!!.deleteById(idPersona)   // Elimina persona de base de datos
+            }catch (e:Exception){
+                throw BusinessException(e.message)          // SI no lo puede eliminar muestra el mensaje de error
+            }
+        }
     }
 }
